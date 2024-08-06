@@ -24,4 +24,20 @@ messagesRouter.post('/', async (req, res) => {
     }
 });
 
+messagesRouter.get('/', async (req, res) => {
+    try {
+        const files = await fs.readdir(messagesDir);
+        const recentFiles = files.slice(-5).reverse();
+        const messages = [];
+
+        for (const file of recentFiles) {
+            const content = await fs.readFile(join(messagesDir, file));
+            messages.push(JSON.parse(content.toString()));
+        }
+        res.send(messages);
+    } catch (error) {
+        console.error('Error while creating message', error);
+    }
+});
+
 export default messagesRouter;
